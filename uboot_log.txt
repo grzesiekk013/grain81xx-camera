@@ -1,0 +1,456 @@
+MP SPI-NOR Bootstrap v0.2
+Boot image offset: 0x10000. Booting Image .....
+0567Will set the following freq...
+PLL1: 800 MHz, PLL2: 540 MHz, CPU freq: 540 MHz, AHB freq: 270 MHz, DDR freq: 80 MHz
+go...
+
+*********************************************
+Please input Space to run Linux
+Please input ESC to run UBOOT
+Please input . to run burn-in
+Otherwise, system will run Linux after 1 sec
+*********************************************
+Load image from SPI-NOR offset 0xd0000 to sdram 0x4000000
+Jump 0x4000000
+Uncompressing Linux.......................................................................................................................................................................................................................................................................................................................................................................................................................................... done, booting the kernel.
+Linux version 2.6.28 (root@ubuntu) (gcc version 4.4.0 (Faraday C/C++ Compiler Rlease 20100325) ) #1285 PREEMPT Thu Dec 25 17:19:45 CST 2014
+CPU: FA626TE [66056261] revision 1 (ARMv5TE), cr=0000797f
+CPU: VIPT aliasing data cache, VIPT aliasing instruction cache
+Machine: Faraday GM8126
+Warning: bad configuration page, trying to continue
+Memory policy: ECC disabled, Data cache writeback
+Built 1 zonelists in Zone order, mobility grouping on.  Total pages: 32512
+Kernel command line: mem=128M console=uart,shift,2,io,0xF9830000,38400
+Early serial console at I/O port 0xf9830000 (options '38400', shift 2)
+console [uart0] enabled
+PID hash table entries: 512 (order: 9, 2048 bytes)
+IC: GM8128 MP
+GM Clock: CPU = 540 MHz, AHBCLK = 270 MHz, PLL1CLK = 800 MHz, PLL2CLK = 540 MHz
+console handover: boot [uart0] -> real [ttyS0]
+Dentry cache hash table entries: 16384 (order: 4, 65536 bytes)
+Inode-cache hash table entries: 8192 (order: 3, 32768 bytes)
+Memory: 128MB = 128MB total
+Memory: 115868KB available (3765K code, 353K data, 9752K init)
+Calibrating delay loop... 534.52 BogoMIPS (lpj=267264)
+Mount-cache hash table entries: 512
+CPU: Testing write buffer coherency: ok
+net_namespace: 636 bytes
+Fmem: node 0 is online, alloc pages = 16384(active pages = 32768)
+high_memory:0xc8000000, VM Start:0xc8800000, End:0xe0000000
+NET: Registered protocol family 16
+PMU: Mapped at 0xf9900000
+pmu_get_cpu_clk:221 <fclk_mode=2, pll2_out=540000000>
+Attach GM AHB-DMA Driver
+SCSI subsystem initialized
+usbcore: registered new interface driver usbfs
+usbcore: registered new interface driver hub
+usbcore: registered new device driver usb
+NET: Registered protocol family 2
+IP route cache hash table entries: 1024 (order: 0, 4096 bytes)
+TCP established hash table entries: 4096 (order: 3, 32768 bytes)
+TCP bind hash table entries: 4096 (order: 2, 16384 bytes)
+TCP: Hash tables configured (established 4096 bind 4096)
+TCP reno registered
+NET: Registered protocol family 1
+Video Timer(timer3) Max 31000ms in 0xf9720840 HZ.
+JFFS2 version 2.2. (NAND) © 2001-2006 Red Hat, Inc.
+msgmni has been set to 226
+alg: No test for stdrng (krng)
+io scheduler noop registered
+io scheduler anticipatory registered (default)
+io scheduler deadline registered
+io scheduler cfq registered
+probe ftgpio010.0 OK!!, at c8858000
+probe ftgpio010.1 OK!!, at c885c000
+probe ftgpio010.2 OK!!, at c8860000
+Serial: 8250/16550 driver 4 ports, IRQ sharing disabled
+serial8250: ttyS0 at I/O 0xf9830000 (irq = 9) is a 16550A
+serial8250: ttyS1 at I/O 0xf9840000 (irq = 10) is a 16550A
+serial8250: ttyS3 at I/O 0xf9880000 (irq = 21) is a 16550A
+brd: module loaded
+loop: module loaded
+PPP generic driver version 2.4.2
+PPP Deflate Compression module registered
+PPP BSD Compression module registered
+PPP MPPE Compression module registered
+NET: Registered protocol family 24
+PPPoL2TP kernel driver, V1.0
+tun: Universal TUN/TAP device driver, 1.6
+tun: (C) 1999-2004 Max Krasnyansky <maxk@qualcomm.com>
+Linux video capture interface: v2.00
+Driver 'sd' needs updating - please use bus_type methods
+Driver 'sr' needs updating - please use bus_type methods
+Creating 6 MTD partitions on "wb_spi_flash":
+0x000d0000-0x00cff000 : "Linux Section"
+0x00d00000-0x01000000 : "User Section"
+0x00001000-0x00010000 : "Loader Section"
+0x00010000-0x000b0000 : "BurnIn Section"
+0x000b0000-0x000ce000 : "UBoot Section"
+0x000ce000-0x000d0000 : "CFG Section"
+Probe FTSSP010 SPI Controller at 0x98200000 (irq 6)
+usbmon: debugfs is not available
+ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
+AMBA bus_register ok
+Enter Device A
+temp = 340
+Drive Vbus because of ID pin shows Device A
+otg2xx device_register ok
+AMBA_bus_match(...) Found Driver FOTG2XX_DRV
+AMBA_bus_match(...) Found Driver FOTG2XX_DRV
+FOTG2XX_DRV fotg2xx_dev: GM  USB2.0 Host Controller
+FOTG2XX_DRV fotg2xx_dev: new USB bus registered, assigned bus number 1
+FOTG2XX_DRV fotg2xx_dev: irq 4, io mem 0xf9220000
+FOTG2XX_DRV fotg2xx_dev: USB 2.0 started, EHCI 1.00
+usb usb1: configuration #1 chosen from 1 choice
+hub 1-0:1.0: USB hub found
+hub 1-0:1.0: 1 port detected
+FOTG200 Controller Initialization
+fotg200 int enable = 1f30
+usbcore: registered new interface driver cdc_acm
+cdc_acm: v0.26:USB Abstract Control Model driver for USB modems and ISDN adaptes
+Initializing USB Mass Storage driver...
+usbcore: registered new interface driver usb-storage
+USB Mass Storage support registered.
+usbcore: registered new interface driver usbserial
+USB Serial support registered for generic
+usbcore: registered new interface driver usbserial_generic
+usbserial: USB Serial Driver core
+USB Serial support registered for GSM modem (1-port)
+usbcore: registered new interface driver option
+option: v0.7.2:USB Driver for GSM modems
+mice: PS/2 mouse device common for all mice
+i2c /dev entries driver
+ftiic010 ftiic010.0: irq 18, mapped at c886c000
+usbcore: registered new interface driver usbhid
+usbhid: v2.6:USB HID core driver
+Advanced Linux Sound Architecture Driver Version 1.0.18rc3.
+ALSA device list:
+  No soundcards found.
+TCP cubic registered
+NET: Registered protocol family 17
+RPC: Registered udp transport module.
+RPC: Registered tcp transport module.
+Freeing init memory: 9752K
+usb 1-1: new high speed USB device using FOTG2XX_DRV and address 2
+port status 10009
+2nd port status 10009
+***************************************
+Busybox starts to run
+***************************************
+Mounting root fs rw ...
+mount: mounting mdev on /dev failed: Invalid argument
+mount: mounting sysfs on /sys failed: Device or resource busy
+mkdir: can't create directory '/dev/pts': File exists
+mount: mounting devpts on /dev/pts failed: Device or resource busy
+--------Starting mdev.........
+Mounting other filesystems ...
+Setting hostname ...
+Mounting user's MTD partion
+Has JFFS2 on mtdblock1
+mkdir: can't create directory '/mnt/mtd/update': File exists
+mkdir: can't create directory '/mnt/mtd/update/file': Fgpio..................bae:99400000.map c8874000
+ilgpio1..................base:99700000.map c8878000
+e exists
+cp: can't stat '/mnt/mtd/update/file/*so*': No such file or directory
+cp: can't stat '/mnt/mtd/update/file/*ko': No such file or directory
+cp: can't stat '/mnt/mtd/update/file/nvisr': No such file or dirFTMAC with FARAAY Internal PHY support
+ectory
+cp: can't stat '/mnt/mtdFTMAC110 Driver (Linux 2.6) 01/10/11 - (C) 2011 GM Corp
+/update/file/breset Faraday Internal PHY.
+oot.sh': No such file or directory
+rtc-pcf8563 0-0051: chip found, driver version 0.4.3
+rtc-pcf8563 0-0051: rtc core: registered rtc-pcf8563 as rtc0
+usb 1-1: configuration #1 chosen from 1 choice
+WDT base virtual address = c88ac000
+new 12.25....2.2.7..............
+rtc-pcf8563 0-0051: low voltage detected, date/time is not reliable.
+rtc-pcf8563 0-0051: retrieved date/time is not valid.
+g_cap_type[HM1375]
+ab:ir: can't create directory '/mnt/mtd/sysconfig': File exisADDR: tse8:
+   dfa:ef1a:a19:u6b
+ltftmac110_link_change:2113 <SPEED100>
+s_aftmac110_link_change:2127 <FULL>
+ll...
+g_wifi_cfg netstat:1 nettype:0 enctype:0 ssid: pass:
+-----------------------mod:1   TimeZone:20
+ Can't find:manufacturer  offset:-1
+==> Model[78-701#] manufacturer[] serverMask[0x3f],domainType[0]
+ g_netcfg.byMACAddr ==== E8:AB:FA:1A:19:6B
+set hw : ifconfig eth0 hw ether E8:AB:FA:1A:19:6B
+
+init_wifi_type...
+/mnt/mtd/wifiType_cfg :: fd==0
+install_wifi_3070_sta !!!
+rt3070sta: module license 'unspecified' taints kernel.
+rtusb init rt3070STA --->
+
+
+=== pAd = c8983000, size = 527720 ===
+
+<-- RTMPAllocTxRxRingMemory, Status=0
+<-- RTMPAllocAdapterBlock, Status=0
+usbcore: registered new interface driver rt3070STA
+
+geFrammap: DDR0: memory base=0x2800000, memory size=0x4000000, alignment=256K
+t wifi mode(3070)
+cp: can't stat '/mntFrammap: version 0.28.3, 1 DDR is managed.
+/mtd/update/file/*.cfg': No such file or directory
+
+VideoGraph v0.44 You may use
+   #echo 11 > /proc/videograph/dbg
+to enable debug mode (0xbf10c50c)
+Debug message at 0xc8a39000 start pointer 0xbf12c5f0 size 0x124f80
+Insert dvr_common driver done.
+Platform GM812600
+    enc_in0=(buf: 1843200,6,0)
+    enc_in0_d=(buf: 1843200,6,1)
+    enc_out0=(res: 1280,720)
+    enc_out0=(buf: 783360,4,0)
+    scl0_out0=(res: 640,368)
+    scl0_out0=(buf: 471040,4,0)
+    scl1_out0=(res: 640,480)
+    scl1_out0=(buf: 614400,4,0)
+    scl2_out0=(res: 320,180)
+    scl2_out0=(buf: 128000,4,0)
+    ssenc_out0=(buf: 783360,1,0)
+    sub1_enc_out0=(res: 1280,720)
+    sub1_enc_out0=(buf: 783360,2,0)
+    sub2_enc_out0=(res: 1280,720)
+    sub2_enc_out0=(buf: 783360,2,0)
+    enc_in1=(buf: 471040,5,0)
+    enc_in1_d=(buf: 471040,5,1)
+    enc_out1=(res: 640,368)
+    enc_out1=(buf: 200192,4,0)
+    scl0_out1=(res: 640,368)
+    scl0_out1=(buf: 471040,4,0)
+    scl1_out1=(res: 160,96)
+    scl1_out1=(buf: 30720,4,0)
+    scl2_out1=(res: 320,208)
+    scl2_out1=(buf: 133120,4,0)
+    ssenc_out1=(buf: 65280,1,0)
+    sub1_enc_out1=(res: 640,368)
+    sub1_enc_out1=(buf: 200192,2,0)
+    sub2_enc_out1=(res: 1280,720)
+    sub2_enc_out1=(buf: 200192,2,0)
+    sub3_enc_out1=(res: 640,368)
+    sub3_enc_out1=(buf: 200192,2,0)
+    enc_in2=(buf: 1843200,4,0)
+    enc_in2_d=(buf: 1843200,4,1)
+    enc_out2=(res: 1280,720)
+    enc_out2=(buf: 783360,4,0)
+    scl0_out2=(res: 640,400)
+    scl0_out2=(buf: 512000,3,0)
+    sub1_enc_out2=(res: 640,400)
+    sub1_enc_out2=(buf: 217600,3,0)
+    enc_in3=(buf: 35840,4,0)
+    enc_in3_d=(buf: 35840,4,1)
+    enc_out3=(res: 160,112)
+    enc_out3=(buf: 20000,3,0)
+    ssenc_out3=(buf: 15232,1,0)
+    sub1_enc_out3=(res: 160,112)
+    sub1_enc_out3=(buf: 20000,2,0)
+    lcd=(buf: 614400,6,0)
+Note: create lcd queue with Pattern 0x98654312
+    lcd_d=(buf: 614400,6,1)
+Insert dvr_disp driver done.
+
+LCD platform: Hook GM8126 driver.
+GM_ffb: [ver:0.1.14]INIT flcd200 OK.
+LCD0 VA = 0xc8e50000, size:0xd000 bytes
+LCD0: Output resolution is D1 NTSC.
+Register codec TVE100.
+LCD: Input resolution is 640x360
+LCD0: Standard: 27.0MHZ
+LCD0: PVALUE = 19, pixel clock = 27.0MHZ, scalar clock = 108MHZ
+LCD driver[Ver: 1.1.0] init ok.
+fcap: V0.3.13
+vcap_dev: [0]:bAlbum_bug=0, bCrop_bug=1, bCU_bug=0
+                LL_BusDeadlock_bug=0, bSupportSplitOSDDispRamWritePort=1
+
+fcap: [0]: Link List mode!
+fcap: fosd00: minor=56
+fcap: fosd02: minor=55
+fcap: fosd01: minor=54
+fcap: fosd03: minor=53
+vcap_dev: [1]:bAlbum_bug=0, bCrop_bug=1, bCU_bug=0
+                LL_BusDeadlock_bug=0, bSupportSplitOSDDispRamWritePort=1
+
+fcap: [1]: Link List mode!
+fcap: fosd10: minor=52
+fcap: fosd12: minor=51
+fcap: fosd11: minor=50
+fcap: fosd13: minor=49
+probe hm1375 i2c OK.
+Capture Clock Out = 27000000
+HM1375: 720HD 27M OK
+SCL: Version, v1.17
+SCL: div:4
+FAVC Encoder IRQ mode(29)v4.2.1
+FAVC codec Max Resolution is 1280x720, built @ Aug  7 2012 15:21:55
+MCP100 driver with CPU for VG,
+GM8126 MJPEG with CPU for VG, encoder ver: 3.2.5, decoder ver: 3.1.4, built @ My 14 2012 15:30:35
+
+FTDI210 registers 32 entities to video graph!
+FTDI210 Driver v1.4 (1 engine(s))
+ft-32ssp: common[ver:0.3.4] INIT OK!
+card->cardno = 2
+card->pbase = 98a00000
+card->vbase = c8ffe000
+card->irq = 11
+my_card->capture.dma_ch = 4
+my_card->playback.dma_ch = 5
+ft-32ssp: SoundCard(2) attached OK (c11885d0)
+I2S probe ok in Slave mode.
+card->cardno = 1
+card->pbase = 98600000
+card->vbase = c9212000
+card->irq = 7
+my_card->capture.dma_ch = 2
+my_card->playback.dma_ch = 3
+ft-32ssp(ftssp010_pcm_preallocate_dma_buffer): failed to allocate dma buff
+ft-32ssp: SoundCard(1) attached OK (c12bf5d0)
+I2S probe ok in Slave mode.
+mmc0: SDHCI controller on <NULL> [ftsdc010] using DMA
+Init SAR ADC done.
+register sar adc device (0) OK!!
+SENSOR_TYPE_HM1375...
+111111111111111111111111111111111here
+init_global...
+init_ptz:: enter
+init_ptz:: in start_gotoinitxy() start pthread
+goto_initxy:: enter
+init_hori_moto::
+video_configure_init...
+init_linkstat_thread...
+init_netwifi_module...
+
+eth0 stat up===================================================thread
+<==== rt28xx_init, Status=0
+0x1300 = 00064300
+killall: dhcpd: no process killed
+eth0_up_pro:: gw(route add default gw 192.168.1.1 )
+main uses obsolete (PF_INET,SOCK_PACKET)
+ ::get macaddr 1::E8:AB:FA:1A:19:6B##########
+==========g_netcfg.conn_mod:1
+==========g_netcfg.ipcamIP:192.168.1.100
+==========g_netcfg.ipcamIPMask:255.255.255.0
+==========g_netcfg.byMACAddr:E8:AB:FA:1A:19:6B
+==========g_netcfg.ipcamGatewayIP:192.168.1.1
+==========g_netcfg.byDnsaddr[0]:192.168.1.1
+==========g_netcfg.byDnsaddr[1]:192.168.1.1
+Before reconfig net ,mac=E8:AB:FA:1A:19:6B,g_net_status == 1,g_wifi_cfg.nettype=0
+dhcp_connecting.......
+
+DHCP_TEST::tv_sec=-23... listen_mode=2....stat=0
+####INIT_SELECTING DHCP
+DHCP_TEST::xid=10.............
+debug, Sending discover...
+
+DHCP_TEST::tv_sec=2... listen_mode=2....stat=0
+
+DHCP_TEST::tv_sec=0... listen_mode=2....stat=1
+####REQUESTING DHCP
+DHCP_TEST::packet_num=0.............
+debug, Sending select for 10.0.12.213...
+
+DHCP_TEST::tv_sec=2... listen_mode=2....stat=1
+info, Lease of ipaddr 10.0.12.213 obtained, lease time 43200
+======dhcp data====begin======
+dhcp ip: 10.0.12.213
+dhcp mask: 255.255.255.0
+dhcp gateway: 10.0.12.1
+dhcp dns1: 10.0.12.1
+dhcp dns2: (null)
+ING reconfig net ,mac=E8:AB:FA:1A:19:6B
+InitPreviouView:: alloc preview buffer, buf length(3145728)
+InitPreviouView:: alloc l_pDateBuf, buf length(524288)
+init_image_hm1375...
+<==== rt28xx_init, Status=0
+0x1300 = 00064300
+**********set 50HZ *********
+start set gateway ip
+cmd:route add default gw 10.0.12.1
+After reconfig net ,mac=E8:AB:FA:1A:19:6B
+getNetinfo...
+::get macaddr 1::E8:AB:FA:1A:19:6B##########
+==========g_Ipaddress:10.0.12.213
+==========g_equinfo.sSerialNumber:e8abfa1a196b
+==========g_equinfo.serverIP:10.0.12.213
+==========g_netcfg.ipcamIP:10.0.12.213
+==========g_netcfg.ipcamIPMask:255.255.255.0
+==========g_netcfg.byMACAddr:E8:AB:FA:1A:19:6B
+==========g_netcfg.ipcamGatewayIP:10.0.12.1
+==========g_netcfg.byDnsaddr[0]:10.0.12.1
+==========g_netcfg.byDnsaddr[1]:192.168.1.1
+::to set brightness:i2c_access 0x24 w 0x04 0xC0 0x88
+init_image_hm1375:: set mir_flip = 0x08
+Out of range!
+fcap: [0]:OSD P0 default fonts num=42
+
+thrfcap: [0]:OSD P1 default fonts num=42
+
+ead_osd_show...
+thread_timer:: enter
+no led_conf file!
+thread_audio_encode...
+thread_write_avifile:: enter
+hm1375 set i2caccess.....
+thread_send_ftp_smtp...
+input_mode = 0
+rm: can't remove '/mnt/mtd/failure': No such file or directory
+
+H264 rate control version: fix 0.95
+open Platform 8126 version 81262210
+rtfcap: [0]:IN=HM1375
+spd_dvr_fd
+favc_motion_info_init...
+
+##### Transfer Group 0 Done,695ms!
+update_enc_param...ch_num = 0
+cfgud_change:: ubs->bit_rate(384) ubs->target_rate_max(4194304) ubs->rate_ctl_tpe(0)
+update_bs:: update bit_rate, ch_num(0), sub_num(0), bit_rate(384000)
+
+##### Transfer Group 0 Done,1022ms!
+update_frame_rate:: ch_num(0), sub_num(0), frame_rate(10)
+update_bitrate_rate:: uparm bit_rate(384000)
+favc_motion_info_init...
+block: 2 1 79 45 ^^
+block: 0 0 0 0 ^^
+block: 0 0 0 0 ^^
+block: 0 0 0 0 ^^
+update_enc_param...ch_num = 0
+cfgud_change:: ubs->bit_rate(1024) ubs->target_rate_max(4194304) ubs->rate_ctl_ype(3)
+update_bs:: update bit_rate, ch_num(0), sub_num(1), bit_rate(0)
+
+##### Transfer Group 1 Done,554ms!
+fcap: [1]:OSD P0 default fonts num=42
+
+fcap: [1]:OSD P1 default fonts num=42
+
+Platform 8126 version 81262210
+fcap: [1]:IN=HM1375
+
+##### Transfer Group 2 Done,118ms!
+update_frame_rate:: ch_num(0), sub_num(1), frame_rate(10)
+update_bitrate_rate:: uparm bit_rate(1024000)
+update_enc_param...ch_num = 1
+cfgud_change:: ubs->bit_rate(384) ubs->target_rate_max(4194304) ubs->rate_ctl_tpe(0)
+update_bs:: update bit_rate, ch_num(1), sub_num(0), bit_rate(384000)
+update_frame_rate:: ch_num(1), sub_num(0), frame_rate(10)
+update_bitrate_rate:: uparm bit_rate(384000)
+
+##### Transfer Group 0 Done,471ms!
+
+Frammap: 768 pages in DDR0 are freed.
+StreamServer start...
+IOTC_Initialize VERSION[10A0800]...
+IOTC_Initialize2() ret = 0
+update_enc_param...ch_num = 0
+cfgud_change:: ubs->bit_rate(1024) ubs->target_rate_max(4194304) ubs->rate_ctl_ype(3)
+update_bs:: update bit_rate, ch_num(0), sub_num(1), bit_rate(0)
+update_frame_rate:: ch_num(0), sub_num(1), frame_rate(10)
+update_bitrate_rate:: uparm bit_rate(1024000)
+cp: can't stat '/mnt/mtd/update/file/gmdvr_mem.cfg': No such file or directory
+cp: can't stat '/mnt/mtd/update/file/ipc.cfg': No such file or directory
+ping: bad address 'www.baidu.com'
+ping: bad address 'www.p2picamera.com'
