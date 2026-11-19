@@ -40,7 +40,7 @@ ip link set eth0 up
 Transfer binaries using `netcat`:
 ```sh
 # On the camera:
-nc -l -p 9010 > /tmp/snap && chmod +x /tmp/snap
+nc -l -p 9010 > /tmp/snap && chmod +x /tmp/snap && ./tmp/snap
 
 # On the host machine:
 nc -N 10.0.12.215 9010 < snap
@@ -59,6 +59,6 @@ nc -N 10.0.12.215 9010 < snap
 - [x] Write the PTZ & IR control library (`libs/ptz_test.c`)
 
 ### To Do
-- [ ] Capture an MJPEG frame (`snap.c` / `libgm.so`)
+- [ ] Capture an MJPEG frame (`snap.c` / `libgm.so`) (using ghidra decompiler)
 - [ ] Clean up SPI Flash (remove manufacturer bloat)
 - [ ] Run a lightweight HTTP MJPEG streamer
