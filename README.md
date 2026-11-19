@@ -4,7 +4,7 @@
 
 This IP camera originally relied on an outdated P2P server (`P2PICAMERA.COM`), which is now permanently down.
 
-The goal of this project is to rescue the camera from e-waste and turn it into a simple, reliable, local-only IP camera—free of cloud dependencies—with working PTZ (Pan-Tilt-Zoom) controls and a live video stream.
+The goal of this project is to rescue the camera from e-waste and turn it into a simple, reliable, local-only IP camera-free of cloud dependencies-with working PTZ (Pan-Tilt-Zoom) controls and a live video stream.
 
 To achieve this, I had to analyze the system processes and disassemble parts of the original firmware to reproduce the hardware controls.
 
