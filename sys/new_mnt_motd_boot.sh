@@ -52,3 +52,5 @@ telnetd
 
 ip addr add 10.0.12.215/24 dev eth0
 ip link set eth0 up
+
+httpd -h /mnt/mtd/opt/www -p 80

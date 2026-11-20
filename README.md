@@ -58,7 +58,8 @@ nc -N 10.0.12.215 9010 < snap
 - [x] Log in via Telnet
 - [x] Override `boot.sh` (sys/new_mnt_motd_boot.sh) to disable the manufacturer's application and watchdog
 - [x] Write the PTZ & IR control library (`libs/ptz_test.c`) (using ghidra decompiler)
-- [x] Capture an MJPEG frame (`snap.c`) (using ghidra decompiler)
+- [x] Capture an MJPEG frame (`snap.c`) (using ghidra decompiler, a lot of work has been made)
+- [x] Run a lightweight HTTP MJPEG streamer (see web_app using httpd from busybox)
 
 ### Web APP
 ![WebApp](images/web_app.png)
@@ -69,5 +70,4 @@ nc -N 10.0.12.215 9010 < snap
 - [ ] Get MicroSD working
 - [ ] Get Audio working (not neccesary)
 - [ ] Clean up SPI Flash (remove manufacturer bloat)
-- [ ] Run a lightweight HTTP MJPEG streamer
 - [ ] Make wrapper for ptz_test (goto pan/tilt cords and simple pan/tilt)
