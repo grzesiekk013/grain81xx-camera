@@ -4,7 +4,7 @@
 
 This IP camera originally relied on an outdated P2P server (`P2PICAMERA.COM`), which is now permanently down.
 
-The goal of this project is to rescue the camera from e-waste and turn it into a simple, reliable, local-only IP camera—free of cloud dependencies—with working PTZ (Pan-Tilt-Zoom) / IR controls and a live snapshot / MJPEG-style web stream.
+The goal of this project is to rescue the camera from e-waste and turn it into a simple, reliable, local-only IP camera free of cloud dependencies with working PTZ (Pan-Tilt-Zoom) / IR controls and a live snapshot / MJPEG-style web stream.
 
 To achieve this, I analyzed the system processes and decompiled parts of the original `nvisr` firmware (using Ghidra) to reproduce the hardware controls without relying on `nvisr`.
 
