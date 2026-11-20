@@ -40,5 +40,15 @@ devmem 0x99000058 32 0x1C502416
 devmem 0x99000060 32 0xFFD75FC7
 devmem 0x99700008 32 0x8000
 
+V50=$(devmem 0x99000050)
+V54=$(devmem 0x99000054)
+V58=$(devmem 0x99000058)
+devmem 0x99000050 32 $(( V50 & 0xfffcff00 ))
+devmem 0x99000054 32 $(( V54 & 0xfffffc3f ))
+devmem 0x99000058 32 $(( V58 & 0xff000003 ))
+
 mdev -s
 telnetd
+
+ip addr add 10.0.12.215/24 dev eth0
+ip link set eth0 up

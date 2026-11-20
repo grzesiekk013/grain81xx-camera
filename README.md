@@ -41,6 +41,7 @@ Transfer binaries using `netcat`:
 ```sh
 # On the camera:
 nc -l -p 9010 > /tmp/snap && chmod +x /tmp/snap && ./tmp/snap
+nc -l -p 9010 > /tmp/ptz_test && chmod +x /tmp/ptz_test 
 
 # On the host machine:
 nc -N 10.0.12.215 9010 < snap
@@ -55,10 +56,18 @@ nc -N 10.0.12.215 9010 < snap
 - [x] Capture and analyze U-Boot logs
 - [x] Extract `/etc/shadow` and crack the DES root password (`GM8182`) with `hashcat`
 - [x] Log in via Telnet
-- [x] Override `boot.sh` to disable the manufacturer's application and watchdog
-- [x] Write the PTZ & IR control library (`libs/ptz_test.c`)
+- [x] Override `boot.sh` (sys/new_mnt_motd_boot.sh) to disable the manufacturer's application and watchdog
+- [x] Write the PTZ & IR control library (`libs/ptz_test.c`) (using ghidra decompiler)
+- [x] Capture an MJPEG frame (`snap.c`) (using ghidra decompiler)
+
+### Web APP
+![WebApp](images/web_app.png)
 
 ### To Do
-- [ ] Capture an MJPEG frame (`snap.c` / `libgm.so`) (using ghidra decompiler)
+- [ ] DHCP
+- [ ] Get WiFi working
+- [ ] Get MicroSD working
+- [ ] Get Audio working (not neccesary)
 - [ ] Clean up SPI Flash (remove manufacturer bloat)
 - [ ] Run a lightweight HTTP MJPEG streamer
+- [ ] Make wrapper for ptz_test (goto pan/tilt cords and simple pan/tilt)

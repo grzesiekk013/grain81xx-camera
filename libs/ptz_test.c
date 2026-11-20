@@ -57,9 +57,50 @@ static const uint8_t seq_dir1[9] = { 0x01, 0x03, 0x02, 0x06, 0x04, 0x0c, 0x08, 0
 
 static int gpio_fd = -1;
 
-static void set_bank0_pin(int pin, int val) {
-    struct gpio_req req = { pin, val };
-    sys_ioctl(gpio_fd, 5, &req);
+static void set_pin_dir(int bank, int pin, int dir) {
+    struct gpio_req req = { pin, dir };
+    unsigned long cmd = (bank == 1) ? 6UL : 2UL;
+    sys_ioctl(gpio_fd, cmd, &req);
+}
+
+static void set_pin_val(int bank, int pin, int val) {
+    if (bank == 0) {
+        struct gpio_req req = { pin, val };
+        sys_ioctl(gpio_fd, 5UL, &req);
+    } else {
+        uint32_t port_val = 0;
+        sys_ioctl(gpio_fd, 8UL, &port_val);
+        if (val) {
+            port_val |= (1U << pin);
+        } else {
+            port_val &= ~(1U << pin);
+        }
+        sys_ioctl(gpio_fd, 7UL, &port_val);
+    }
+}
+
+static void init_ptz_ir_dirs(void) {
+    const int pan_pins[4]  = { 14, 15, 16, 17 };
+    const int tilt_pins[4] = { 18, 19, 20, 21 };
+
+    for (int i = 0; i < 4; i++) {
+        set_pin_dir(1, pan_pins[i], 1);
+        set_pin_dir(1, tilt_pins[i], 1);
+    }
+
+    // Pin 13 (0xd) w banku 1 (jak w init_gpio: set_gpio_type(1, 0xd, 1); set_gpio_value(1, 0xd, 1))
+    set_pin_dir(1, 13, 1);
+    set_pin_val(1, 13, 1);
+
+    // Krańcówki w banku 0 jako wejścia (0)
+    set_pin_dir(0, 28, 0);
+    set_pin_dir(0, 27, 0);
+    set_pin_dir(0, 30, 0);
+    set_pin_dir(0, 20, 0);
+
+    // IR-cut i IR-LED w banku 0 jako wyjścia (1)
+    set_pin_dir(0, 3, 1); // ircut
+    set_pin_dir(0, 0, 1); // irled
 }
 
 static int read_limit_switch(int pin) {
@@ -118,14 +159,16 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    init_ptz_ir_dirs();
+
     if (str_eq(argv[1], "pan") && argc >= 4) {
         step_axis(0, parse_int(argv[2]), parse_int(argv[3]), 1800);
     } else if (str_eq(argv[1], "tilt") && argc >= 4) {
         step_axis(1, parse_int(argv[2]), parse_int(argv[3]), 2500);
     } else if (str_eq(argv[1], "ircut") && argc >= 3) {
-        set_bank0_pin(3, parse_int(argv[2]));
+        set_pin_val(0, 3, parse_int(argv[2]));
     } else if (str_eq(argv[1], "irled") && argc >= 3) {
-        set_bank0_pin(0, parse_int(argv[2]));
+        set_pin_val(0, 0, parse_int(argv[2]));
     } else {
         print_str("Unknown command\n");
     }

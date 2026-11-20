@@ -1,0 +1,50 @@
+
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <title>Podglad kamery</title>
+  <style>
+    body { font-family: sans-serif; background: #111; color: #eee; margin: 16px; }
+    img { max-width: 100%; height: auto; border: 1px solid #444; background: #000; }
+    .bar { margin-bottom: 12px; display: flex; gap: 12px; align-items: center; }
+    a { color: #6cf; }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <button onclick="toggleSync()">Start/Stop sync</button>
+    <span id="status">Sync: aktywny</span>
+    <a href="/ptz.html">Panel PTZ / IR</a>
+  </div>
+  <img id="cam" src="/cgi-bin/snap.cgi?t=0" alt="Podglad">
+  <script>
+    const img = document.getElementById("cam");
+    const statusEl = document.getElementById("status");
+    let active = true;
+    let timer = null;
+
+    function nextFrame() {
+      if (!active) return;
+      img.src = "/cgi-bin/snap.cgi?t=" + Date.now();
+    }
+
+    img.onload = () => {
+      statusEl.textContent = "Sync: OK (" + new Date().toLocaleTimeString() + ")";
+      if (active) timer = setTimeout(nextFrame, 400);
+    };
+
+    img.onerror = () => {
+      statusEl.textContent = "Sync: ponawiam...";
+      if (active) timer = setTimeout(nextFrame, 500);
+    };
+
+    function toggleSync() {
+      active = !active;
+      clearTimeout(timer);
+      statusEl.textContent = active ? "Sync: aktywny" : "Sync: wstrzymany";
+      if (active) nextFrame();
+    }
+  </script>
+</body>
+</html>
