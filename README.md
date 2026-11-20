@@ -4,10 +4,22 @@
 
 This IP camera originally relied on an outdated P2P server (`P2PICAMERA.COM`), which is now permanently down.
 
-The goal of this project is to rescue the camera from e-waste and turn it into a simple, reliable, local-only IP camera free of cloud dependencies with working PTZ (Pan-Tilt-Zoom) / IR controls and a live snapshot / MJPEG-style web stream.
+The goal of this project is to rescue the camera from e-waste and turn it into a simple, reliable, local-only IP camera—free of cloud dependencies—with working PTZ (Pan-Tilt-Zoom) / IR controls and a live snapshot / MJPEG-style web stream.
 
 To achieve this, I analyzed the system processes and decompiled parts of the original `nvisr` firmware (using Ghidra) to reproduce the hardware controls without relying on `nvisr`.
 
+## Hardware Specifications
+
+| Component | Details |
+| :--- | :--- |
+| **SoC / CPU** | Grain Media GM8125 |
+| **RAM** | 128 MB DDR2 (Samsung) |
+| **Storage** | 4 MB SPI Flash + MicroSD card slot |
+| **Camera Sensor** | 3 MPx sensor |
+| **Networking** | 10/100 Mbps Ethernet + BL-3070-3B WiFi module |
+| **PTZ Actuators** | 2x stepper motors (Pan & Tilt) with GPIO limit switches |
+| **I/O & Peripherals** | 1x alarm relay, audio out, physical reset button, DC power jack |
+| **OS** | Linux A320D 2.6.28 #1285 PREEMPT Thu Dec 25 17:19:45 CST 2014 armv5tel GNU/Linux |
 ---
 
 ## Repository Structure
