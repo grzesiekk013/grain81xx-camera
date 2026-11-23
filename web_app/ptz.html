@@ -1,63 +1,116 @@
 <!doctype html>
-<html lang="pl">
+<html lang="pl" data-bs-theme="dark">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>GRAIN PTZ IR Grzegorz Lademann</title>
-  <style>
-    body { font-family: sans-serif; background: #111; color: #eee; margin: 16px; }
-    .row { margin: 10px 0; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-    input, button { padding: 6px 10px; }
-    img { max-width: 720px; width: 100%; cursor: crosshair; border: 1px solid #444; display: block; margin-top: 10px; }
-    pre { background: #1c1c1c; padding: 8px; border: 1px solid #333; max-width: 720px; }
-    a { color: #6cf; }
-  </style>
+  <link rel="stylesheet" href="/bootstrap.min.css">
 </head>
-<body>
-  <div class="row"><a href="/">Preview</a></div>
-  <div class="row">
-    <button onclick="send('cmd=pan&dir=0&steps=15')">Pan L (15)</button>
-    <button onclick="send('cmd=pan&dir=1&steps=15')">Pan P (15)</button>
-    <button onclick="send('cmd=tilt&dir=1&steps=10')">Tilt G (10)</button>
-    <button onclick="send('cmd=tilt&dir=0&steps=10')">Tilt D (10)</button>
+<body class="bg-dark text-light">
+  <div class="container py-3" style="max-width: 820px;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="m-0">PTZ &amp; IR Control</h5>
+      <a href="/" class="btn btn-outline-light btn-sm">Preview</a>
+    </div>
+
+    <div class="card bg-body-tertiary border-secondary mb-3">
+      <div class="card-body">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+          <button class="btn btn-secondary btn-sm" onclick="send('cmd=home')">Home (0,0)</button>
+          <button class="btn btn-info btn-sm" onclick="send('cmd=home&center=1')">Center (312,70)</button>
+          <span class="ms-auto small text-secondary">X = Pan (0..625), Y = Tilt (0..140)</span>
+        </div>
+
+        <div class="row g-2 align-items-end mb-3">
+          <div class="col-4 col-sm-3">
+            <label for="stepVal" class="form-label small mb-1">Steps</label>
+            <input id="stepVal" type="number" class="form-control form-control-sm" min="1" max="625" value="15">
+          </div>
+          <div class="col-4 col-sm-3">
+            <button class="btn btn-primary btn-sm w-100" onclick="movePan(0)">Left (X-)</button>
+          </div>
+          <div class="col-4 col-sm-3">
+            <button class="btn btn-primary btn-sm w-100" onclick="movePan(1)">Right (X+)</button>
+          </div>
+          <div class="col-6 col-sm-1">
+            <button class="btn btn-outline-primary btn-sm w-100" title="Tilt Down (Y-)" onclick="moveTilt(0)">Y-</button>
+          </div>
+          <div class="col-6 col-sm-2">
+            <button class="btn btn-outline-primary btn-sm w-100" title="Tilt Up (Y+)" onclick="moveTilt(1)">Y+</button>
+          </div>
+        </div>
+
+        <div class="row g-2 align-items-end mb-3">
+          <div class="col-6 col-sm-3">
+            <label for="gx" class="form-label small mb-1">X (Pan 0..625)</label>
+            <input id="gx" type="number" class="form-control form-control-sm" min="0" max="625" value="0">
+          </div>
+          <div class="col-6 col-sm-3">
+            <label for="gy" class="form-label small mb-1">Y (Tilt 0..140)</label>
+            <input id="gy" type="number" class="form-control form-control-sm" min="0" max="140" value="0">
+          </div>
+          <div class="col-12 col-sm-6">
+            <button class="btn btn-success btn-sm w-100" onclick="gotoCoords()">Goto X (Pan), Y (Tilt)</button>
+          </div>
+        </div>
+
+        <div class="d-flex flex-wrap align-items-center gap-2">
+          <span class="small me-1">IR-LED:</span>
+          <button class="btn btn-danger btn-sm" onclick="send('cmd=irled&val=1')">IR-LED OFF</button>
+          <button class="btn btn-success btn-sm" onclick="send('cmd=irled&val=0')">IR-LED ON</button>
+          <span class="small ms-2 me-1">IR-Cut:</span>
+          <button class="btn btn-warning btn-sm text-dark" onclick="send('cmd=ircut&val=1')">IR-Cut 1</button>
+          <button class="btn btn-outline-warning btn-sm" onclick="send('cmd=ircut&val=0')">IR-Cut 0</button>
+        </div>
+      </div>
+    </div>
+
+    <pre id="out" class="p-2 rounded bg-black border border-secondary small mb-3">Gotowe</pre>
+
+    <div class="card bg-black border-secondary overflow-hidden">
+      <img id="view" src="/cgi-bin/snap.cgi?t=1" class="img-fluid w-100" style="cursor: crosshair;" onclick="clickMove(event)" alt="Kliknij aby przesunac">
+    </div>
   </div>
-  <div class="row">
-    X: <input id="gx" type="number" value="0" style="width:70px">
-    Y: <input id="gy" type="number" value="0" style="width:70px">
-    <button onclick="gotoCoords()">Goto X,Y</button>
-  </div>
-  <div class="row">
-    IR-LED:
-    <button onclick="send('cmd=irled&val=1')">OFF</button>
-    <button onclick="send('cmd=irled&val=0')">ON</button>
-    IR-Cut:
-    <button onclick="send('cmd=ircut&val=1')">1</button>
-    <button onclick="send('cmd=ircut&val=0')">0</button>
-  </div>
-  <pre id="out">Gotowe</pre>
-  <img id="view" src="/cgi-bin/snap.cgi?t=1" onclick="clickMove(event)" alt="Kliknij aby przesunac">
   <script>
     const out = document.getElementById("out");
     const view = document.getElementById("view");
+    const gxEl = document.getElementById("gx");
+    const gyEl = document.getElementById("gy");
+    const stepEl = document.getElementById("stepVal");
 
     async function send(qs) {
       out.textContent = "Sending: " + qs;
       const r = await fetch("/cgi-bin/ptz.cgi?" + qs);
-      out.textContent = await r.text();
+      const txt = await r.text();
+      out.textContent = txt.trim();
+      const m = txt.match(/pos=(-?\d+),(-?\d+)/);
+      if (m) {
+        gxEl.value = m[1];
+        gyEl.value = m[2];
+      }
       view.src = "/cgi-bin/snap.cgi?t=" + Date.now();
     }
 
+    function movePan(dir) {
+      const steps = parseInt(stepEl.value, 10) || 10;
+      send("cmd=pan&dir=" + dir + "&steps=" + steps);
+    }
+
+    function moveTilt(dir) {
+      const steps = parseInt(stepEl.value, 10) || 10;
+      send("cmd=tilt&dir=" + dir + "&steps=" + steps);
+    }
+
     function gotoCoords() {
-      const x = document.getElementById("gx").value;
-      const y = document.getElementById("gy").value;
-      send("cmd=goto&x=" + encodeURIComponent(x) + "&y=" + encodeURIComponent(y));
+      send("cmd=goto&x=" + encodeURIComponent(gxEl.value) + "&y=" + encodeURIComponent(gyEl.value));
     }
 
     function clickMove(e) {
       const rect = view.getBoundingClientRect();
       const nx = (e.clientX - rect.left) / rect.width - 0.5;
       const ny = (e.clientY - rect.top) / rect.height - 0.5;
-      const dx = Math.round(nx * 40);
-      const dy = Math.round(-ny * 25);
+      const dx = Math.round(nx * 60);
+      const dy = Math.round(-ny * 30);
       if (dx !== 0) send("cmd=pan&dir=" + (dx > 0 ? 1 : 0) + "&steps=" + Math.abs(dx));
       if (dy !== 0) send("cmd=tilt&dir=" + (dy > 0 ? 1 : 0) + "&steps=" + Math.abs(dy));
     }
