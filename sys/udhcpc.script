@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Note: this file has to be located in /mnt/mtd/udhcpc.script
+# then exec 'sync'
+
+[ -z "$1" ] && exit 1
+case "$1" in
+    bound|renew)
+        [ -n "$broadcast" ] && BROADCAST="broadcast $broadcast"
+        [ -n "$subnet" ] && NETMASK="netmask $subnet"
+        ifconfig "$interface" "$ip" $NETMASK $BROADCAST up
+        if [ -n "$router" ]; then
+            while route del default dev "$interface" 2>/dev/null; do :; done
+            for r in $router; do
+                route add default gw "$r" dev "$interface"
+            done
+        fi
+        ;;
+esac

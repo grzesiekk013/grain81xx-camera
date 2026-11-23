@@ -96,6 +96,8 @@ nc -N 10.0.12.215 9010 < bins/ptz_test
 * [x] Build `snap` (`libs/snap.c` -> `bins/snap`) to capture JPEG frames and harden `web_app/cgi-bin/snap.cgi` against existing target files and concurrent `dvr_graph` contention (`/tmp/snap.lock`)
 * [x] Run a persistent BusyBox `httpd` web app (`web_app/` -> `/mnt/mtd/opt/www`) with client-synchronized snapshot updates (`index.html`, `ptz.html`, `snap.cgi`)
 * [x] Make wrapper for `ptz_test` (`web_app/cgi-bin/ptz.cgi` supporting simple `pan`/`tilt`, `ircut`/`irled`, and coordinate `goto` tracking)
+* [x] DHCP
+* [x] Get WiFi working
 
 ### Web APP
 
@@ -103,8 +105,21 @@ nc -N 10.0.12.215 9010 < bins/ptz_test
 
 ### To Do
 
-* [ ] DHCP
-* [ ] Get WiFi working
 * [ ] Get MicroSD working
 * [ ] Get Audio working (not necessary)
 * [ ] Clean up SPI Flash (remove manufacturer bloat)
+
+### Instruction
+
+#### Variant A: UART Serial Access
+1. Solder a USB-to-TTL UART adapter to the PCB serial port (see `images/`, connecting `VCC` is not needed).
+2. Connect to the serial port at `38400` baud, `8N1` (8 data bits, no parity, 1 stop bit), then power on the camera.
+
+#### Variant B: Ethernet & Telnet Access
+1. Connect the camera via Ethernet and check its IP address in your router dashboard.
+2. Open a terminal, run `telnet <IP_ADDRESS>`, and log in as `root` with password `GM8182`.
+
+#### Replacing `boot.sh` and Deploying Binaries
+3. Watch the boot output until the application logs appear, then press `Ctrl+C` until you get a shell prompt.
+4. Go to `/mnt/mtd/` (`cd /mnt/mtd/`), back up the original script (`mv boot.sh boot.sh.old`), create a new one (`touch boot.sh && chmod 777 boot.sh`), open it in `vi boot.sh`, press `A` to insert, and paste the contents of `sys/boot.sh` (or `sys/new_mnt_motd_boot.sh`). Set your WiFi `SSID` and password (`WPAPSK`) if you want WiFi enabled, then press `Esc`, type `:wq`, and run `sync` followed by `reboot`.
+5. With the stock software bypassed, transfer the compiled binaries from `bins/` to `/mnt/mtd/bins` (using the `nc` transfer commands), run `sync`, reboot the camera, and test them.
