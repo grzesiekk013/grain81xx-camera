@@ -1,6 +1,7 @@
 # GRAIN 81XX CAMERA - BLOW 78-701
 
 ![BlowCamera](images/image.png)
+![PCB](images/20261119_153324.jpg)
 
 This IP camera originally relied on an outdated P2P server (`P2PICAMERA.COM`), which is now permanently down.
 
