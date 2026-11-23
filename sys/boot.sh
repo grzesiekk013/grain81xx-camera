@@ -55,8 +55,10 @@ mdev -s
 # Ethernet Static IP Setting
 #ip addr add 10.0.12.215/24 dev eth0
 
-
-
+# MicroSD card
+/sbin/insmod /lib/modules/ftsdc010.ko
+mkdir -p /mnt/sd/video /mnt/sd/picture
+mount | grep -q "/mnt/sd " || mount /dev/mmcblk0 /mnt/sd 2>/dev/null
 
 # Network Interfaces
 /sbin/insmod /lib/modules/rtutil3070sta.ko

@@ -39,6 +39,24 @@ grain81xx-camera/
 
 ---
 
+### Instruction
+
+#### Variant A: UART Serial Access
+1. Solder a USB-to-TTL UART adapter to the PCB serial port (see `images/`, connecting `VCC` is not needed).
+2. Connect to the serial port at `38400` baud, `8N1` (8 data bits, no parity, 1 stop bit), then power on the camera.
+
+#### Variant B: Ethernet & Telnet Access
+1. Connect the camera via Ethernet and check its IP address in your router dashboard.
+2. Open a terminal, run `telnet <IP_ADDRESS>`, and log in as `root` with password `GM8182`.
+
+#### Replacing `boot.sh` and Deploying Binaries
+3. Watch the boot output until the application logs appear, then press `Ctrl+C` until you get a shell prompt.
+4. Go to `/mnt/mtd/` (`cd /mnt/mtd/`), back up the original script (`mv boot.sh boot.sh.old`), create a new one (`touch boot.sh && chmod 777 boot.sh`), open it in `vi boot.sh`, press `A` to insert, and paste the contents of `sys/boot.sh` (or `sys/new_mnt_motd_boot.sh`). Set your WiFi `SSID` and password (`WPAPSK`) if you want WiFi enabled, then press `Esc`, type `:wq`, and run `sync` followed by `reboot`.
+5. With the stock software bypassed, transfer the compiled binaries from `bins/` to `/mnt/mtd/bins` (using the `nc` transfer commands), run `sync`, reboot the camera, and test them.
+6. To get microSD working make sure if it is formated in ext3, ext2, vfat, msdos or iso9660. SD should be mounted in `/mnt/sd`.
+
+---
+
 ## Getting Root Shell & Flash Backup
 
 1. **Connect via UART:** Solder jumper wires to the onboard UART (COM) header and connect it to a USB-to-TTL adapter.
@@ -56,6 +74,8 @@ grain81xx-camera/
 * **PTZ & IR Control (`libs/ptz_test.c`):** Pan and tilt use stepper motors driven via `/dev/gpio0` (`ftgpio.ko`) using `ioctl` commands (`2`, `4`, `5`, `6`, `7`, `8`), with GPIO limit switches (`LEFT`, `RIGHT`, `UP`, `DOWN`) and IR outputs (`ircut`, `irled`). Standalone `ptz_test` sets pin directions explicitly (`ioctl` `2` for bank `0`, `ioctl` `6` for bank `1`, including bank `1` pin `13`), and `/mnt/mtd/boot.sh` (`sys/new_mnt_motd_boot.sh`) applies the required pinmux masks on `0x99000050`, `0x99000054`, and `0x99000058` so PTZ and IR work immediately after boot without `nvisr`.
 * **Video Capture (`libs/snap.c` & `web_app/cgi-bin/snap.cgi`):** `boot.sh` loads the HM1375 / `videograph` / `dvr_enc` / `fmjpeg_drv` kernel modules without `cpe-wdt.ko` or `nvisr`. Because `snap` fails if the target output file already exists and concurrent calls can trigger `dvr_graph` / rate-control errors, `snap.cgi` writes to a unique temporary file in `/tmp/`, moves it atomically to `/tmp/snap.jpg`, and serializes access using a `/tmp/snap.lock` directory lock.
 * **Persistent Web App (`web_app/`):** Static pages and CGI scripts are stored on persistent flash under `/mnt/mtd/opt/www` (`index.html`, `ptz.html`, `cgi-bin/snap.cgi`, `cgi-bin/ptz.cgi`) and served via BusyBox `httpd -h /mnt/mtd/opt/www -p 80` started from `/mnt/mtd/boot.sh`.
+- **WiFi & DHCP (`ra0` / `eth0` & `/mnt/mtd/udhcpc.script`):** RT3070 (`BL-3070-3B`) loads via `rtutil3070sta.ko`, `rt3070sta.ko`, and `rtnet3070sta.ko`, associates with `iwpriv`, and gets an IP after a short `sleep` using `udhcpc -i <iface> -s /mnt/mtd/udhcpc.script -b` (since the default DHCP script did not apply the lease). Having both `eth0` and `ra0` on the same subnet (e.g. `10.0.12.0/24`) can cause routing conflicts.
+- **MicroSD (`ftsdc010.ko` & `/mnt/sd`):** Loading `/lib/modules/ftsdc010.ko` exposes the SD card (`mmcblk0`, supported filesystems include `ext3`, `ext2`, `vfat`, `msdos`, `iso9660`) mounted at `/mnt/sd`. Note that stock `get_sd_stats()` checks `/proc/diskstats` for `mmcblk` and a partition character `'p'`, so raw `/dev/mmcblk0` without a partition needs direct `/mnt/sd` handling.
 
 ---
 
@@ -96,30 +116,16 @@ nc -N 10.0.12.215 9010 < bins/ptz_test
 * [x] Build `snap` (`libs/snap.c` -> `bins/snap`) to capture JPEG frames and harden `web_app/cgi-bin/snap.cgi` against existing target files and concurrent `dvr_graph` contention (`/tmp/snap.lock`)
 * [x] Run a persistent BusyBox `httpd` web app (`web_app/` -> `/mnt/mtd/opt/www`) with client-synchronized snapshot updates (`index.html`, `ptz.html`, `snap.cgi`)
 * [x] Make wrapper for `ptz_test` (`web_app/cgi-bin/ptz.cgi` supporting simple `pan`/`tilt`, `ircut`/`irled`, and coordinate `goto` tracking)
-* [x] DHCP
-* [x] Get WiFi working
+- [x] Configure DHCP on `eth0` and `ra0` using `/mnt/mtd/udhcpc.script` and a boot `sleep` delay for WiFi association
+- [x] Get WiFi (`ra0` / RT3070) working via `iwpriv` and `udhcpc` (watching out for same-subnet routing conflicts with `eth0`)
+- [x] Get MicroSD working by loading `ftsdc010.ko` and mounting `/dev/mmcblk0` at `/mnt/sd`
 
 ### Web APP
 
 ![WebApp](images/web_app.png)
 
-### To Do
+### What I haven't done, but could do in the future
 
-* [ ] Get MicroSD working
 * [ ] Get Audio working (not necessary)
-* [ ] Clean up SPI Flash (remove manufacturer bloat)
-
-### Instruction
-
-#### Variant A: UART Serial Access
-1. Solder a USB-to-TTL UART adapter to the PCB serial port (see `images/`, connecting `VCC` is not needed).
-2. Connect to the serial port at `38400` baud, `8N1` (8 data bits, no parity, 1 stop bit), then power on the camera.
-
-#### Variant B: Ethernet & Telnet Access
-1. Connect the camera via Ethernet and check its IP address in your router dashboard.
-2. Open a terminal, run `telnet <IP_ADDRESS>`, and log in as `root` with password `GM8182`.
-
-#### Replacing `boot.sh` and Deploying Binaries
-3. Watch the boot output until the application logs appear, then press `Ctrl+C` until you get a shell prompt.
-4. Go to `/mnt/mtd/` (`cd /mnt/mtd/`), back up the original script (`mv boot.sh boot.sh.old`), create a new one (`touch boot.sh && chmod 777 boot.sh`), open it in `vi boot.sh`, press `A` to insert, and paste the contents of `sys/boot.sh` (or `sys/new_mnt_motd_boot.sh`). Set your WiFi `SSID` and password (`WPAPSK`) if you want WiFi enabled, then press `Esc`, type `:wq`, and run `sync` followed by `reboot`.
-5. With the stock software bypassed, transfer the compiled binaries from `bins/` to `/mnt/mtd/bins` (using the `nc` transfer commands), run `sync`, reboot the camera, and test them.
+* [ ] Clean up SPI Flash (remove manufacturer bloat - not neccesary beacuse only selected .ko are loaded and you can use MicroSD)
+* [ ] Get Alarm and WiFi led working (not necessary)
