@@ -5,13 +5,13 @@ TMP_JPG="/tmp/snap_$$_$(date +%s 2>/dev/null || echo 0).jpg"
 LOCK_DIR="/tmp/snap.lock"
 
 while ! mkdir "$LOCK_DIR" 2>/dev/null; do
-    usleep 100000 2>/dev/null || sleep 1
+    usleep 1000 2>/dev/null || sleep 1
 done
 trap 'rmdir "$LOCK_DIR" 2>/dev/null; rm -f "$TMP_JPG" 2>/dev/null' EXIT INT TERM
 
 rm -f "$TMP_JPG" 2>/dev/null
 "$SNAP_BIN" 0 1280 720 "$TMP_JPG" >/dev/null 2>&1
-usleep 100000 2>/dev/null || true
+usleep 1000 2>/dev/null || true
 
 if [ -s "$TMP_JPG" ]; then
     rm -f "$OUT_JPG" 2>/dev/null

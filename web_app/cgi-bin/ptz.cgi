@@ -8,7 +8,7 @@ LOCK_DIR="/tmp/ptz.lock"
 [ -f "$POS_FILE" ] || printf "0 0\n" > "$POS_FILE"
 
 while ! mkdir "$LOCK_DIR" 2>/dev/null; do
-    usleep 50000 2>/dev/null || sleep 1
+    usleep 5000 2>/dev/null || sleep 1
 done
 trap 'rmdir "$LOCK_DIR" 2>/dev/null' EXIT INT TERM
 

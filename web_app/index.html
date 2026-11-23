@@ -3,7 +3,7 @@
 <html lang="pl">
 <head>
   <meta charset="utf-8">
-  <title>Podglad kamery</title>
+  <title>GRAIN PREVIEW Grzegorz Lademann</title>
   <style>
     body { font-family: sans-serif; background: #111; color: #eee; margin: 16px; }
     img { max-width: 100%; height: auto; border: 1px solid #444; background: #000; }
@@ -14,7 +14,7 @@
 <body>
   <div class="bar">
     <button onclick="toggleSync()">Start/Stop sync</button>
-    <span id="status">Sync: aktywny</span>
+    <span id="status">Sync: active</span>
     <a href="/ptz.html">Panel PTZ / IR</a>
   </div>
   <img id="cam" src="/cgi-bin/snap.cgi?t=0" alt="Podglad">
@@ -35,14 +35,14 @@
     };
 
     img.onerror = () => {
-      statusEl.textContent = "Sync: ponawiam...";
+      statusEl.textContent = "Sync: retry...";
       if (active) timer = setTimeout(nextFrame, 500);
     };
 
     function toggleSync() {
       active = !active;
       clearTimeout(timer);
-      statusEl.textContent = active ? "Sync: aktywny" : "Sync: wstrzymany";
+      statusEl.textContent = active ? "Sync: active" : "Sync: paused";
       if (active) nextFrame();
     }
   </script>

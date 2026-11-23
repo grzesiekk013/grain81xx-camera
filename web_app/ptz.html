@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
   <meta charset="utf-8">
-  <title>Sterowanie PTZ i IR</title>
+  <title>GRAIN PTZ IR Grzegorz Lademann</title>
   <style>
     body { font-family: sans-serif; background: #111; color: #eee; margin: 16px; }
     .row { margin: 10px 0; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
@@ -13,7 +13,7 @@
   </style>
 </head>
 <body>
-  <div class="row"><a href="/">Podglad</a></div>
+  <div class="row"><a href="/">Preview</a></div>
   <div class="row">
     <button onclick="send('cmd=pan&dir=0&steps=15')">Pan L (15)</button>
     <button onclick="send('cmd=pan&dir=1&steps=15')">Pan P (15)</button>
@@ -27,8 +27,8 @@
   </div>
   <div class="row">
     IR-LED:
-    <button onclick="send('cmd=irled&val=1')">Wl</button>
-    <button onclick="send('cmd=irled&val=0')">Wyl</button>
+    <button onclick="send('cmd=irled&val=1')">OFF</button>
+    <button onclick="send('cmd=irled&val=0')">ON</button>
     IR-Cut:
     <button onclick="send('cmd=ircut&val=1')">1</button>
     <button onclick="send('cmd=ircut&val=0')">0</button>
@@ -40,7 +40,7 @@
     const view = document.getElementById("view");
 
     async function send(qs) {
-      out.textContent = "Wysylanie: " + qs;
+      out.textContent = "Sending: " + qs;
       const r = await fetch("/cgi-bin/ptz.cgi?" + qs);
       out.textContent = await r.text();
       view.src = "/cgi-bin/snap.cgi?t=" + Date.now();
