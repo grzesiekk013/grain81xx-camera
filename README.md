@@ -15,7 +15,7 @@ To achieve this, I analyzed the system processes and decompiled parts of the ori
 | **SoC / CPU** | Grain Media GM8125 540MHz |
 | **RAM** | 128 MB DDR2 (Samsung) 80MHz |
 | **Storage** | 16 MB SPI Flash (3MB User space) + MicroSD card slot |
-| **Camera Sensor** | 3 MPx sensor - I get around 0.7 FPS |
+| **Camera Sensor** | 3 MPx sensor - I get around 20FPS HD |
 | **Networking** | 10/100 Mbps Ethernet + BL-3070-3B WiFi module |
 | **PTZ Actuators** | 2x stepper motors (Pan & Tilt) with GPIO limit switches |
 | **I/O & Peripherals** | 1x alarm relay, audio out, physical reset button, DC power jack |
