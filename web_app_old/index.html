@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pl" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GRAIN PREVIEW Grzegorz Lademann</title>
+  <link rel="stylesheet" href="/bootstrap.min.css">
+</head>
+<body class="bg-dark text-light">
+  <div class="container py-3" style="max-width: 900px;">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+      <div class="d-flex align-items-center gap-2">
+        <button id="btnSync" class="btn btn-primary btn-sm" onclick="toggleSync()">Stop sync</button>
+        <span id="status" class="badge text-bg-secondary">Sync: active</span>
+      </div>
+      <a href="/ptz.html" class="btn btn-outline-info btn-sm">Panel PTZ / IR</a>
+    </div>
+    <div class="card bg-black border-secondary overflow-hidden">
+      <img id="cam" src="/cgi-bin/snap.cgi?t=0" class="img-fluid w-100" alt="Podglad">
+    </div>
+  </div>
+  <script>
+    const img = document.getElementById("cam");
+    const statusEl = document.getElementById("status");
+    const btnSync = document.getElementById("btnSync");
+    let active = true;
+    let timer = null;
+
+    function nextFrame() {
+      if (!active) return;
+      img.src = "/cgi-bin/snap.cgi?t=" + Date.now();
+    }
+
+    img.onload = () => {
+      statusEl.className = "badge text-bg-success";
+      statusEl.textContent = "Sync: OK (" + new Date().toLocaleTimeString() + ")";
+      if (active) timer = setTimeout(nextFrame, 250);
+    };
+
+    img.onerror = () => {
+      statusEl.className = "badge text-bg-warning";
+      statusEl.textContent = "Sync: retry...";
+      if (active) timer = setTimeout(nextFrame, 500);
+    };
+
+    function toggleSync() {
+      active = !active;
+      clearTimeout(timer);
+      if (active) {
+        btnSync.className = "btn btn-primary btn-sm";
+        btnSync.textContent = "Stop sync";
+        statusEl.className = "badge text-bg-info";
+        statusEl.textContent = "Sync: active";
+        nextFrame();
+      } else {
+        btnSync.className = "btn btn-outline-primary btn-sm";
+        btnSync.textContent = "Start sync";
+        statusEl.className = "badge text-bg-secondary";
+        statusEl.textContent = "Sync: paused";
+      }
+    }
+  </script>
+</body>
+</html>

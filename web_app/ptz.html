@@ -10,7 +10,7 @@
   <div class="container py-3" style="max-width: 820px;">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h5 class="m-0">PTZ &amp; IR Control</h5>
-      <a href="/" class="btn btn-outline-light btn-sm">Preview</a>
+      <a href="/" class="btn btn-outline-light btn-sm" onclick="view.src=''">Preview</a>
     </div>
 
     <div class="card bg-body-tertiary border-secondary mb-3">
@@ -68,7 +68,7 @@
     <pre id="out" class="p-2 rounded bg-black border border-secondary small mb-3">Gotowe</pre>
 
     <div class="card bg-black border-secondary overflow-hidden">
-      <img id="view" src="/cgi-bin/snap.cgi?t=1" class="img-fluid w-100" style="cursor: crosshair;" onclick="clickMove(event)" alt="Kliknij aby przesunac">
+      <img id="view" src="/cgi-bin/stream.cgi" class="img-fluid w-100" style="cursor: crosshair;" onclick="clickMove(event)" alt="Kliknij aby przesunac">
     </div>
   </div>
   <script>
@@ -80,15 +80,18 @@
 
     async function send(qs) {
       out.textContent = "Sending: " + qs;
-      const r = await fetch("/cgi-bin/ptz.cgi?" + qs);
-      const txt = await r.text();
-      out.textContent = txt.trim();
-      const m = txt.match(/pos=(-?\d+),(-?\d+)/);
-      if (m) {
-        gxEl.value = m[1];
-        gyEl.value = m[2];
+      try {
+        const r = await fetch("/cgi-bin/ptz.cgi?" + qs);
+        const txt = await r.text();
+        out.textContent = txt.trim();
+        const m = txt.match(/pos=(-?\d+),(-?\d+)/);
+        if (m) {
+          gxEl.value = m[1];
+          gyEl.value = m[2];
+        }
+      } catch (err) {
+        out.textContent = "ERR: " + err;
       }
-      view.src = "/cgi-bin/snap.cgi?t=" + Date.now();
     }
 
     function movePan(dir) {
@@ -114,6 +117,12 @@
       if (dx !== 0) send("cmd=pan&dir=" + (dx > 0 ? 1 : 0) + "&steps=" + Math.abs(dx));
       if (dy !== 0) send("cmd=tilt&dir=" + (dy > 0 ? 1 : 0) + "&steps=" + Math.abs(dy));
     }
+
+    view.onerror = () => {
+      setTimeout(() => { view.src = "/cgi-bin/stream.cgi?t=" + Date.now(); }, 1000);
+    };
+
+    window.addEventListener("pagehide", () => { view.src = ""; });
   </script>
 </body>
 </html>
