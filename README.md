@@ -12,14 +12,15 @@ To achieve this, I analyzed the system processes and decompiled parts of the ori
 
 | Component | Details |
 | :--- | :--- |
-| **SoC / CPU** | Grain Media GM8125 |
-| **RAM** | 128 MB DDR2 (Samsung) |
+| **SoC / CPU** | Grain Media GM8125 540MHz |
+| **RAM** | 128 MB DDR2 (Samsung) 80MHz |
 | **Storage** | 16 MB SPI Flash (3MB User space) + MicroSD card slot |
 | **Camera Sensor** | 3 MPx sensor |
 | **Networking** | 10/100 Mbps Ethernet + BL-3070-3B WiFi module |
 | **PTZ Actuators** | 2x stepper motors (Pan & Tilt) with GPIO limit switches |
 | **I/O & Peripherals** | 1x alarm relay, audio out, physical reset button, DC power jack |
 | **OS** | Linux A320D 2.6.28 #1285 PREEMPT Thu Dec 25 17:19:45 CST 2014 armv5tel GNU/Linux |
+| **GCC** | gcc version 4.4.0 (Faraday C/C++ Compiler Rlease 20100325) |
 ---
 
 ## Repository Structure
