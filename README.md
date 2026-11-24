@@ -14,7 +14,7 @@ To achieve this, I analyzed the system processes and decompiled parts of the ori
 | :--- | :--- |
 | **SoC / CPU** | Grain Media GM8125 |
 | **RAM** | 128 MB DDR2 (Samsung) |
-| **Storage** | 4 MB SPI Flash + MicroSD card slot |
+| **Storage** | 16 MB SPI Flash (3MB User space) + MicroSD card slot |
 | **Camera Sensor** | 3 MPx sensor |
 | **Networking** | 10/100 Mbps Ethernet + BL-3070-3B WiFi module |
 | **PTZ Actuators** | 2x stepper motors (Pan & Tilt) with GPIO limit switches |
