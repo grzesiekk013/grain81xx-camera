@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-/* Syscalle Linux ARM EABI */
+/* syscalls ARM EABI */
 #define SYS_exit          1
 #define SYS_write         4
 #define SYS_open          5
@@ -9,6 +9,7 @@
 #define SYS_ioctl         54
 #define SYS_munmap        91
 #define SYS_ftruncate     93
+#define SYS_sigreturn     119
 #define SYS_nanosleep     162
 #define SYS_poll          168
 #define SYS_rt_sigaction  174
@@ -23,9 +24,13 @@
 #define MAP_SHARED        1
 #define SEEK_SET          0
 #define CLOCK_MONOTONIC   1
-#define SIGPIPE           13
 
-/* Kody ioctl z nvisr */
+#define SIGINT            2
+#define SIGPIPE           13
+#define SIGTERM           15
+#define SA_RESTORER       0x04000000u
+
+/* ioctl */
 #define IOCTL_ENC_SET_PARAM      0xc15c4202u
 #define IOCTL_ENC_QUERY_BUF_SIZE 0xc0044208u
 #define IOCTL_ENC_QUERY_SNAP_OFF 0x8004420au
@@ -51,6 +56,20 @@ struct k_sigaction {
     void *sa_restorer;
     uint32_t sa_mask[2];
 };
+
+static volatile int g_stop = 0;
+
+static void on_stop_signal(int sig) {
+    (void)sig;
+    g_stop = 1;
+}
+
+__attribute__((naked)) static void sig_restorer(void) {
+    __asm__ volatile (
+        "mov r7, #119\n" /* SYS_sigreturn */
+        "svc #0\n"
+    );
+}
 
 static const uint8_t main_ch_setting[0x15c] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x01, 0x00, 0x00, 0xf0, 0x00, 0x00, 0x00,
@@ -205,7 +224,8 @@ static long dvr_ctrl(long enc_fd, long common_fd, uint32_t ch, uint32_t cmd) {
     long r = sc3(SYS_ioctl, enc_fd, IOCTL_ENC_CONTROL, (long)ctrl);
     if (r < 0) return r;
 
-    if (common_fd >= 0) {
+    /* COMMON_APPLY */
+    if (cmd != 2 && common_fd >= 0) {
         uint32_t apply_args[4] = { 2, 0, 1u << (ch & 0xffu), 0 };
         r = sc3(SYS_ioctl, common_fd, IOCTL_COMMON_APPLY, (long)apply_args);
         if (r < 0) return r;
@@ -224,6 +244,7 @@ static int grab_one_snap(long enc_fd, long common_fd, uint32_t ch,
 
     struct pollfd pfd = { (int)enc_fd, 0x200, 0 };
     r = sc3(SYS_poll, (long)&pfd, 1, 5000);
+    if (g_stop) return -1;
     if (r <= 0 || !(pfd.revents & 0x200)) {
         log_val("poll timeout/err ret", (uint32_t)r);
         return -1;
@@ -293,11 +314,19 @@ int main(int argc, char **argv) {
     if (str_eq(out_path, "-")) mode = 1;
     else if (str_eq(out_path, "mjpeg")) mode = 2;
 
-    /* Ignoruj SIGPIPE, zeby rozlaczenie klienta czysto zatrzymalo enkoder */
+    /* ignore SIGPIPE */
     struct k_sigaction sa;
     zero_mem(&sa, sizeof(sa));
     sa.sa_handler = (void *)1; /* SIG_IGN */
     sc4(SYS_rt_sigaction, SIGPIPE, (long)&sa, 0, 8);
+
+    /* SIGTERM i SIGINT  */
+    zero_mem(&sa, sizeof(sa));
+    sa.sa_handler  = (void *)on_stop_signal;
+    sa.sa_flags    = SA_RESTORER;
+    sa.sa_restorer = (void *)sig_restorer;
+    sc4(SYS_rt_sigaction, SIGTERM, (long)&sa, 0, 8);
+    sc4(SYS_rt_sigaction, SIGINT,  (long)&sa, 0, 8);
 
     long out_fd = (mode == 0)
         ? sc3(SYS_open, (long)out_path, O_WRONLY | O_CREAT | O_TRUNC, 0644)
@@ -326,7 +355,7 @@ int main(int argc, char **argv) {
     u32[0x78 / 4] = w;
     u32[0x7c / 4] = h;
     u32[0x84 / 4] = fps;
-    u32[0x88 / 4] = (w * h / 256u) * fps * 100u;
+    u32[0x88 / 4] = 512000u;
     u32[0xb0 / 4] = 0x16890024u;
     u32[0xb4 / 4] = (uint32_t)(uintptr_t)ext_param;
 
@@ -351,7 +380,6 @@ int main(int argc, char **argv) {
 
     if (mode == 2) {
         if (write_str(out_fd,
-            "Status: 200 OK\r\n"
             "Content-Type: multipart/x-mixed-replace; boundary=frame\r\n"
             "Cache-Control: no-cache\r\n\r\n") < 0) {
             goto stop_enc;
@@ -360,13 +388,13 @@ int main(int argc, char **argv) {
 
     uint32_t i = 0;
     exit_code = 0;
-    while (count == 0 || i < count) {
+    while (!g_stop && (count == 0 || i < count)) {
         if (grab_one_snap(enc_fd, common_fd, ch, mapped, buf_size, snap_off, out_fd, mode, i) < 0) {
-            exit_code = 1;
+            if (!g_stop) exit_code = 1;
             break;
         }
         i++;
-        if (delay_ms > 0 && (count == 0 || i < count)) pause_ms(delay_ms);
+        if (!g_stop && delay_ms > 0 && (count == 0 || i < count)) pause_ms(delay_ms);
     }
 
 stop_enc:

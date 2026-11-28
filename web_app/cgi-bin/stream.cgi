@@ -6,7 +6,11 @@ if [ -f "$PID_FILE" ]; then
     OLD_PID=$(cat "$PID_FILE" 2>/dev/null)
     if [ -n "$OLD_PID" ] && kill -0 "$OLD_PID" 2>/dev/null; then
         kill "$OLD_PID" 2>/dev/null
-        usleep 200000 2>/dev/null || sleep 1
+        i=0
+        while kill -0 "$OLD_PID" 2>/dev/null && [ "$i" -lt 20 ]; do
+            usleep 100000 2>/dev/null || sleep 1
+            i=$((i + 1))
+        done
     fi
 fi
 
